@@ -2,10 +2,129 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Server Down Detector</title>
+  <title>Server Status</title>
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 2rem;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    input, button {
+      padding: 0.6rem;
+      font-size: 1rem;
+      margin-right: 0.3rem;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    #status {
+      margin-top: 1.2rem;
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    .ok {
+      color: #22c55e;
+    }
+
+    .bad {
+      color: #ef4444;
+    }
+
+    #moreInfo {
+      display: none;
+      margin-top: 1rem;
+      background: #020617;
+      padding: 1rem;
+      border-left: 4px solid #ef4444;
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello Internet</h1>
-  <p>If you can read this, GitHub Pages works.</p>
+
+  <h1>Server Status Check</h1>
+
+  <input id="target" placeholder="example.com">
+  <button onclick="checkServer()">Check</button>
+
+  <div id="status"></div>
+
+  <button id="infoBtn" onclick="toggleInfo()" style="display:none;">
+    More information
+  </button>
+
+  <div id="moreInfo">
+    <p>
+      If the server did not respond in time, it may be:
+    </p>
+    <ul>
+      <li>Powered off or restarting</li>
+      <li>Blocking incoming connections</li>
+      <li>Experiencing network issues</li>
+      <li>Unavailable from your current network</li>
+    </ul>
+    <p>
+      Make sure the server you are trying to reach is turned on and
+      connected to the internet.
+    </p>
+  </div>
+
+  <script>
+    async function checkServer() {
+      const target = document.getElementById("target").value;
+      const status = document.getElementById("status");
+      const infoBtn = document.getElementById("infoBtn");
+      const moreInfo = document.getElementById("moreInfo");
+
+      infoBtn.style.display = "none";
+      moreInfo.style.display = "none";
+      status.textContent = "Checking…";
+      status.className = "";
+
+      if (!target) {
+        status.textContent = "Please enter a server address.";
+        return;
+      }
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 3000);
+
+      const url = "https://" + target + "/?t=" + Math.random();
+      const start = performance.now();
+
+      try {
+        await fetch(url, {
+          mode: "no-cors",
+          signal: controller.signal
+        });
+
+        const time = Math.round(performance.now() - start);
+        clearTimeout(timeout);
+
+        status.textContent = `Servers connected (${time} ms)`;
+        status.className = "ok";
+
+      } catch {
+        status.textContent = "Connection timed out";
+        status.className = "bad";
+        infoBtn.style.display = "inline-block";
+      }
+    }
+
+    function toggleInfo() {
+      const box = document.getElementById("moreInfo");
+      box.style.display = box.style.display === "none" ? "block" : "none";
+    }
+  </script>
+
 </body>
 </html>
