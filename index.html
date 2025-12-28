@@ -5,48 +5,36 @@
   <title>Server Status</title>
 
   <style>
-    body {
-      font-family: system-ui, sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
-      padding: 2rem;
-    }
+   input {
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+}
 
-    h1 {
-      margin-bottom: 1rem;
-    }
+button {
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  transition: background 0.15s ease, border 0.15s ease;
+}
 
-    input, button {
-      padding: 0.6rem;
-      font-size: 1rem;
-      margin: 0.2rem;
-    }
+button:hover {
+  background: #020617;
+  border-color: #38bdf8;
+}
 
-    button {
-      cursor: pointer;
-    }
+button:active {
+  background: #020617;
+  border-color: #22c55e;
+}
 
-    #status {
-      margin-top: 1.2rem;
-      font-size: 1.3rem;
-      font-weight: bold;
-    }
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
-    .ok {
-      color: #22c55e;
-    }
-
-    .bad {
-      color: #ef4444;
-    }
-
-    #moreInfo {
-      display: none;
-      margin-top: 1rem;
-      background: #020617;
-      padding: 1rem;
-      border-left: 4px solid #ef4444;
-    }
   </style>
 </head>
 <body>
