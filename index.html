@@ -19,7 +19,7 @@
     input, button {
       padding: 0.6rem;
       font-size: 1rem;
-      margin-right: 0.3rem;
+      margin: 0.2rem;
     }
 
     button {
@@ -53,8 +53,12 @@
 
   <h1>Server Status Check</h1>
 
-  <input id="target" placeholder="example.com">
-  <button onclick="checkServer()">Check</button>
+  <input id="target" placeholder="example.com or IP address">
+
+  <br>
+
+  <button onclick="checkServer()">Check custom</button>
+  <button onclick="checkPreset()">Test 192.160.0.10</button>
 
   <div id="status"></div>
 
@@ -63,14 +67,12 @@
   </button>
 
   <div id="moreInfo">
-    <p>
-      If the server did not respond in time, it may be:
-    </p>
+    <p>If the server did not respond in time, it may be:</p>
     <ul>
       <li>Powered off or restarting</li>
       <li>Blocking incoming connections</li>
-      <li>Experiencing network issues</li>
-      <li>Unavailable from your current network</li>
+      <li>Not accepting HTTP/HTTPS traffic</li>
+      <li>Unavailable from your network</li>
     </ul>
     <p>
       Make sure the server you are trying to reach is turned on and
@@ -79,16 +81,28 @@
   </div>
 
   <script>
+    function checkPreset() {
+      document.getElementById("target").value = "192.160.0.10";
+      checkServer();
+    }
+
+    async function tryFetch(url, controller) {
+      await fetch(url, {
+        mode: "no-cors",
+        signal: controller.signal
+      });
+    }
+
     async function checkServer() {
-      const target = document.getElementById("target").value;
+      const target = document.getElementById("target").value.trim();
       const status = document.getElementById("status");
       const infoBtn = document.getElementById("infoBtn");
       const moreInfo = document.getElementById("moreInfo");
 
-      infoBtn.style.display = "none";
-      moreInfo.style.display = "none";
       status.textContent = "Checking…";
       status.className = "";
+      infoBtn.style.display = "none";
+      moreInfo.style.display = "none";
 
       if (!target) {
         status.textContent = "Please enter a server address.";
@@ -97,15 +111,24 @@
 
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 3000);
-
-      const url = "https://" + target + "/?t=" + Math.random();
       const start = performance.now();
 
       try {
-        await fetch(url, {
-          mode: "no-cors",
-          signal: controller.signal
-        });
+        // Try HTTPS first
+        await tryFetch(`https://${target}/?t=${Math.random()}`, controller);
+
+        const time = Math.round(performance.now() - start);
+        clearTimeout(timeout);
+
+        status.textContent = `Servers connected (${time} ms)`;
+        status.className = "ok";
+        return;
+
+      } catch {}
+
+      try {
+        // Fallback to HTTP
+        await tryFetch(`http://${target}/?t=${Math.random()}`, controller);
 
         const time = Math.round(performance.now() - start);
         clearTimeout(timeout);
@@ -122,7 +145,8 @@
 
     function toggleInfo() {
       const box = document.getElementById("moreInfo");
-      box.style.display = box.style.display === "none" ? "block" : "none";
+      box.style.display =
+        box.style.display === "none" ? "block" : "none";
     }
   </script>
 
