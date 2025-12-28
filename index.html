@@ -5,35 +5,64 @@
   <title>Server Status</title>
 
   <style>
-   input {
-  background: #020617;
-  color: #e5e7eb;
-  border: 1px solid #1e293b;
-  border-radius: 6px;
-}
+  <head>
+  <meta charset="UTF-8">
+  <title>Server Status</title>
 
-button {
-  background: #020617;
-  color: #e5e7eb;
-  border: 1px solid #1e293b;
-  border-radius: 6px;
-  transition: background 0.15s ease, border 0.15s ease;
-}
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 2rem;
+    }
 
-button:hover {
-  background: #020617;
-  border-color: #38bdf8;
-}
+    input {
+      background: #020617;
+      color: #e5e7eb;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 0.6rem;
+      font-size: 1rem;
+    }
 
-button:active {
-  background: #020617;
-  border-color: #22c55e;
-}
+    button {
+      background: #020617;
+      color: #e5e7eb;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 0.6rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: border-color 0.15s ease;
+    }
 
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+    button:hover {
+      border-color: #38bdf8;
+    }
+
+    button:active {
+      border-color: #22c55e;
+    }
+
+    #status {
+      margin-top: 1.2rem;
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    .ok { color: #22c55e; }
+    .bad { color: #ef4444; }
+
+    #moreInfo {
+      display: none;
+      margin-top: 1rem;
+      background: #020617;
+      padding: 1rem;
+      border-left: 4px solid #ef4444;
+    }
+  </style>
+</head>
 
   </style>
 </head>
